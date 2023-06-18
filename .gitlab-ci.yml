@@ -1,0 +1,23 @@
+stages:
+  - debug
+  - release
+build debug:
+  stage: debug
+  image: gcc
+  script:
+    - make
+  only:
+    - main
+    - release
+    - tags
+    - merge_requests
+build release:
+  stage: release
+  image: gcc
+  script:
+    - make release
+  only:
+    - main
+    - release
+    - tags
+    - merge_requests

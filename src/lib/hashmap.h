@@ -15,15 +15,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "lib/hashmap.h"
-#include <stdio.h>
+#ifndef HASHMAP_H
+#define HASHMAP_H
 
-int main() {
-  hashmap *input_hashmap = create_hashmap();
-  delete_hashmap(input_hashmap);
-  char key[20] = "Hello";
-  int value = 1;
-  key_value_pair *pair = create_pair(key, value);
-  delete_pair(pair);
-  return 0;
-}
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+  char key[20];
+  int value;
+} key_value_pair;
+
+typedef struct {
+  key_value_pair **pair;
+  int items;
+  int capacity;
+} hashmap;
+
+hashmap *create_hashmap();
+key_value_pair *create_pair(char[20], int);
+void delete_pair(key_value_pair *);
+void delete_hashmap(hashmap *);
+#endif

@@ -1,0 +1,5 @@
+services:
+  dev-run:
+    build:
+      context: .
+      target: runner

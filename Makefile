@@ -1,28 +1,45 @@
 CC=gcc
 CCFLAGS=
-LINKER_DEBUG=$(CC) -o
+LINKER_OBJ=$(CC) -c -o
+LINKER_DEBUG=$(CC) -g -o
 LINKER_RELEASE=$(CC) -O3 -o
-TARGET=main
+TARGET=hashmap
 TARGET_DIR=target
-TARGET_DEBUG=$(TARGET_DIR)/$(TARGET)_debug
-TARGET_RELEASE=$(TARGET_DIR)/$(TARGET)_release
+DEBUG_DIR=$(TARGET_DIR)/debug
+RELEASE_DIR=$(TARGET_DIR)/release
+TARGET_DEBUG=$(DEBUG_DIR)/$(TARGET)
+TARGET_RELEASE=$(RELEASE_DIR)/$(TARGET)
+OBJ_DIR=$(TARGET_DIR)/obj
+OBJ_FILES=$(patsubst $(LIB_DIR)/%.c, $(OBJ_DIR)/%.o, $(wildcard $(LIB_DIR)/*.c))
 SRC_DIR=src
-MAIN_FILE=$(SRC_DIR)/$(TARGET).c
+MAIN_FILE=$(SRC_DIR)/main.c
 LIB_DIR=$(SRC_DIR)/lib
-LIB_FILES=$(wildcard $(LIB_DIR)/*.c)
-SRC_FILES=$(MAIN_FILE) $(LIB_FILES)
+SRC_FILES=$(MAIN_FILE) $(OBJ_FILES)
 .DEFAULT_GOAL:=debug
+.PHONY: clean remake remake_release
 debug: $(TARGET_DEBUG)
-$(TARGET_DIR):
-	mkdir $@
-$(TARGET_DEBUG): $(SRC_FILES) $(TARGET_DIR)
+$(DEBUG_DIR):
+	@mkdir -p $@
+$(RELEASE_DIR):
+	@mkdir -p $@
+$(OBJ_DIR):
+	@mkdir -p $@
+$(OBJ_DIR)/%.o:$(LIB_DIR)/%.c $(OBJ_DIR)
+	$(LINKER_OBJ) $@ $<
+$(TARGET_DEBUG): $(SRC_FILES) $(DEBUG_DIR)
 	$(LINKER_DEBUG) $@ $(SRC_FILES)
 release: $(TARGET_RELEASE)
-$(TARGET_RELEASE): $(SRC_FILES) $(TARGET_DIR)
+$(TARGET_RELEASE): $(SRC_FILES) $(RELEASE_DIR)
 	$(LINKER_RELEASE) $@ $(SRC_FILES)
-clean: $(TARGET_DIR)
-	rm -r $<
+clean:
+	@{\
+		if [ -d $(TARGET_DIR) ]; then\
+		rm -r $(TARGET_DIR);\
+		fi;\
+	}
 run: $(TARGET_DEBUG)
 	./$<
 r_run: $(TARGET_RELEASE)
 	./$<
+remake: clean run
+remake_release: clean r_run

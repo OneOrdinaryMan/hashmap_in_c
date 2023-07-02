@@ -18,12 +18,18 @@
 #include "lib/hashmap.h"
 #include <stdio.h>
 
+void test_hash(hashmap *input_hashmap) {
+  char test[][20] = {"a", "b", "c", "d", "e", "f", "g", "h", "i"};
+  for (int i = 0; i < 8; i++) {
+    insert_pair(input_hashmap, test[i], i + 1);
+  }
+}
+
 int main() {
   hashmap *input_hashmap = create_hashmap();
+  test_hash(input_hashmap);
+  printf("items: %d\tcapacity: %d\n", input_hashmap->items,
+         input_hashmap->capacity);
   delete_hashmap(input_hashmap);
-  char key[20] = "Hello";
-  int value = 1;
-  key_value_pair *pair = create_pair(key, value);
-  delete_pair(pair);
   return 0;
 }

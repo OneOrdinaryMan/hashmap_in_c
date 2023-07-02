@@ -34,6 +34,12 @@ typedef struct {
 
 hashmap *create_hashmap();
 key_value_pair *create_pair(char[20], int);
+unsigned int hash(char[20], int);
+void rehash(hashmap *);
+void insert_pair(hashmap *, char[20], int);
+int search_pair(hashmap *, char *);
+void search_delete(hashmap *, char *);
+void print_table(hashmap *);
 void delete_pair(key_value_pair *);
 void delete_hashmap(hashmap *);
 #endif
